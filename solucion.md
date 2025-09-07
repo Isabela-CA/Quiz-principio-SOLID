@@ -111,3 +111,69 @@ class ReporteHtml implements Reporte {
     public void generar(List<Equipo> equipos, List<Arbitro> arbitros) { ... }
 }
 ```
+
+##### 3.  Principio de Sustitución de Liskov (LSP)
+
+En el código original, `GestorCampeonato` usaba condicionales para cambiar el comportamiento de los reportes según el formato.
+
+```java
+public void generarReportes(String formato) {
+    if (formato.equalsIgnoreCase("TEXTO")) { ... }
+    else if (formato.equalsIgnoreCase("HTML")) { ... }
+}
+```
+Se espera que cualquier “generador de reportes” produzca un reporte válido, pero la implementación estaba acoplada a `if/else`. Si un nuevo tipo no cumple exactamente las expectativas, se rompe el flujo.
+
+### Refactorización
+
+Se crea una interfaz común `Reporte` y cada implementación (`ReporteTexto`, `ReporteHtml`) cumple con el mismo contrato. Así, cualquier clase nueva puede sustituir a otra sin problemas.
+
+```java
+interface Reporte {
+    void generar(List<Equipo> equipos, List<Arbitro> arbitros);
+}
+
+class ReporteTexto implements Reporte {
+    @Override
+    public void generar(List<Equipo> equipos, List<Arbitro> arbitros) {
+        System.out.println("--- Reporte del Campeonato (TEXTO) ---");
+        for (Equipo e : equipos) {
+            System.out.println("Equipo: " + e.getNombre());
+        }
+        for (Arbitro a : arbitros) {
+            System.out.println("Árbitro: " + a.getNombre());
+        }
+    }
+}
+
+class ReporteHtml implements Reporte {
+    @Override
+    public void generar(List<Equipo> equipos, List<Arbitro> arbitros) {
+        System.out.println("<html><body>");
+        System.out.println("<h1>Reporte del Campeonato</h1>");
+        for (Equipo e : equipos) {
+            System.out.println("<p>Equipo: " + e.getNombre() + "</p>");
+        }
+        for (Arbitro a : arbitros) {
+            System.out.println("<p>Árbitro: " + a.getNombre() + "</p>");
+        }
+        System.out.println("</body></html>");
+    }
+}
+```
+
+### 4. Principio de Segregación de Interfaces (ISP)
+
+En el original, había un solo método `generarReportes(String formato)` que obligaba al cliente a conocer formatos innecesarios.
+
+Los clientes de `GestorCampeonato` estan limitados a depender de una interfaz “gorda” (un único método con lógica para todos los formatos). Esto no es flexible.
+
+### Refactorización
+
+En lugar de una sola interfaz para todos los reportes, cada implementación se limita a lo que sabe hacer: generar su propio tipo de reporte. Así el cliente sólo depende de la interfaz Reporte que es mínima
+
+```java
+interface Reporte {
+    void generar(List<Equipo> equipos, List<Arbitro> arbitros);
+}
+```
