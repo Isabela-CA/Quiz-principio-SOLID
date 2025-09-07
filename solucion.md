@@ -177,3 +177,46 @@ interface Reporte {
     void generar(List<Equipo> equipos, List<Arbitro> arbitros);
 }
 ```
+
+
+
+### 5. DIP — Principio de inversión de la dependencia
+
+#### Violación 
+
+`GestorCampeonato` crea directamente equipos, árbitros, lógica de reportes y forma de calcular bonificaciones. Depende de implementaciones concretas.
+
+```java
+public void generarReportes(String formato) { ... } 
+```
+
+### Por qué viola DIP
+
+Altos niveles de módulo (`GestorCampeonato`) dependen de detalles concretos; debería depender de abstracciones.
+
+### Refactorización (solución)
+
+`GestorCampeonato` ahora depende de abstracciones (interfaces). Se inyectan (por constructor) `IRegistrador` y `ICalculadorBonificaciones`. Para reportes, se solicita un `generarReportes por formato y se invoca su `generate(...)`. Esto hace que `GestorCampeonato` no dependa de detalles concretos de cómo se registran participantes o cómo se calculan bonificaciones.
+
+```java
+public class GestorCampeonato {
+    private List<Equipo> equipos = new ArrayList<>();
+    private List<Arbitro> arbitros = new ArrayList<>();
+    private RegistroParticipantes registro;
+    private CalculadoraBonificaciones calculadora;
+
+    public GestorCampeonato() {
+        this.registro = new RegistroParticipantes(equipos, arbitros);
+        this.calculadora = new CalculadoraBonificaciones();
+    }
+
+    public void ejecutar() {
+        registro.registrar();
+        calculadora.calcularBonificaciones(equipos);
+    }
+
+    public void generarReportes(Reporte reporte) {
+        System.out.println(reporte.generar(equipos, arbitros));
+    }
+}
+```
