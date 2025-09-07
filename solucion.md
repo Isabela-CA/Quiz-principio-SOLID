@@ -4,7 +4,7 @@ ISABELA CARRILLO AZAIN
 
 BRAYAN JAVIER MANTILLA MENDOZA
 
-##### 1.  Principio SINGLE RESPONSIBILITY PRINCIPLE (SRP)
+### 1.  Principio SINGLE RESPONSIBILITY PRINCIPLE (SRP)
 
 Fragmento de código donde se viola el principio.
 
@@ -82,7 +82,7 @@ class GeneradorReportes {
 
 ---
 
-#### 2. **Principio Abierto/Cerrado (OCP)**  
+### 2. **Principio Abierto/Cerrado (OCP)**  
 Fragmento de código donde se viola el principio
 
 ```java
@@ -112,7 +112,7 @@ class ReporteHtml implements Reporte {
 }
 ```
 
-##### 3.  Principio de Sustitución de Liskov (LSP)
+### 3.  Principio de Sustitución de Liskov (LSP)
 
 En el código original, `GestorCampeonato` usaba condicionales para cambiar el comportamiento de los reportes según el formato.
 
